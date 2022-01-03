@@ -31,7 +31,7 @@ use embedded_time::fixed_point::FixedPoint;
 use rp2040_hal::clocks::Clock;
 
 /// The linker will place this boot block at the start of our program image. We
-// need this to help the ROM bootloader get our code up and running.
+/// need this to help the ROM bootloader get our code up and running.
 #[link_section = ".boot2"]
 #[used]
 pub static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
@@ -46,7 +46,7 @@ const XTAL_FREQ_HZ: u32 = 12_000_000u32;
 /// as soon as all global variables are initialised.
 ///
 /// The function configures the RP2040 peripherals, then writes to the UART in
-/// an inifinite loop.
+/// an infinite loop.
 #[entry]
 fn main() -> ! {
     // Grab our singleton objects
@@ -82,17 +82,18 @@ fn main() -> ! {
         &mut pac.RESETS,
     );
 
-    let mut uart = hal::uart::UartPeripheral::<_, _>::new(pac.UART0, &mut pac.RESETS)
+    let uart_pins = (
+        // UART TX (characters sent from RP2040) on pin 1 (GPIO0)
+        pins.gpio0.into_mode::<hal::gpio::FunctionUart>(),
+        // UART RX (characters received by RP2040) on pin 2 (GPIO1)
+        pins.gpio1.into_mode::<hal::gpio::FunctionUart>(),
+    );
+    let mut uart = hal::uart::UartPeripheral::new(pac.UART0, uart_pins, &mut pac.RESETS)
         .enable(
             hal::uart::common_configs::_9600_8_N_1,
             clocks.peripheral_clock.into(),
         )
         .unwrap();
-
-    // UART TX (characters sent from RP2040) on pin 1 (GPIO0)
-    let _tx_pin = pins.gpio0.into_mode::<hal::gpio::FunctionUart>();
-    // UART RX (characters reveived by RP2040) on pin 2 (GPIO1)
-    let _rx_pin = pins.gpio1.into_mode::<hal::gpio::FunctionUart>();
 
     uart.write_full_blocking(b"UART example\r\n");
 

@@ -15,17 +15,50 @@ pub use cortex_m_rt::entry;
 #[used]
 pub static BOOT2_FIRMWARE: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 
+use display_interface_spi::SPIInterface;
+use embedded_hal::{
+    adc::{Channel, OneShot},
+    digital::v2::{InputPin, OutputPin},
+    spi::MODE_0,
+};
+
+use embedded_time::rate::*;
+
 pub use hal::pac;
 
+use hal::{
+    adc::Adc,
+    gpio::{
+        bank0::{
+            Gpio0, Gpio1, Gpio12, Gpio13, Gpio14, Gpio15, Gpio16, Gpio17, Gpio18, Gpio19, Gpio2,
+            Gpio20, Gpio21, Gpio22, Gpio23, Gpio24, Gpio25, Gpio26, Gpio27, Gpio28, Gpio29, Gpio3,
+            Gpio4, Gpio5, Gpio6, Gpio7,
+        },
+        FunctionI2C, FunctionPwm, FunctionSpi, Pin, PinId, PullUpInput, PushPullOutput,
+    },
+    pac::{RESETS, SPI0},
+    sio::SioGpioBank0,
+    spi::{Enabled, Spi},
+};
+
 hal::bsp_pins!(
-    Gpio0 { name: gpio0 },
-    Gpio1 { name: gpio1 },
-    Gpio2 { name: gpio2 },
-    Gpio3 { name: gpio3 },
-    Gpio4 { name: gpio4 },
-    Gpio5 { name: gpio5 },
-    Gpio6 { name: gpio6 },
-    Gpio7 { name: gpio7 },
+    Gpio0 { name: tx },
+    Gpio1 { name: rx },
+    Gpio2 { name: gpio0 },
+    Gpio3 { name: reset },
+    Gpio4 { 
+        name: miso,
+        aliases: { FunctionSpi: Miso }
+    },
+    Gpio5 { name: d10 },
+    Gpio6 { 
+        name: sck,
+        aliases: { FunctionSpi: Sclk }
+    },
+    Gpio7 { 
+        name: spitx, 
+        aliases: { FunctionSpi: Spitx }
+    },
     Gpio8 { name: gpio8 },
     Gpio9 { name: gpio9 },
     Gpio10 { name: gpio10 },
