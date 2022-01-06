@@ -15,7 +15,6 @@ pub use cortex_m_rt::entry;
 #[used]
 pub static BOOT2_FIRMWARE: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 
-use display_interface_spi::SPIInterface;
 use embedded_hal::{
     adc::{Channel, OneShot},
     digital::v2::{InputPin, OutputPin},
