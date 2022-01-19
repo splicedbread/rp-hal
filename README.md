@@ -179,6 +179,17 @@ RP2040 chip according to how it is connected up on the Feather RP2040.
 [Adafruit QT Py RP2040]: https://www.adafruit.com/product/4900
 [adafruit-qt-py-rp2040]: https://github.com/rp-rs/rp-hal/tree/main/boards/adafruit-qt-py-rp2040
 
+### [adafruit-trinkey-qt2040] - Board Support for the [Adafruit Trinkey QT2040]
+
+You should include this crate if you are writing code that you want to run on
+an [Adafruit Trinkey QT2040] - a 3x4 keyboard and OLED combo board from Adafruit.
+
+This crate includes the [rp2040-hal], but also configures each pin of the
+RP2040 chip according to how it is connected up on the Trinkey.
+
+[Adafruit-Trinkey-QT2040]: https://github.com/rp-rs/rp-hal/tree/main/boards/adafruit-trinkey-qt2040
+[adafruit trinkey qt2040]: https://www.adafruit.com/product/5056
+
 ### [pimoroni-pico-explorer] - Board Support for the [Pimoroni Pico Explorer]
 
 You should include this crate if you are writing code that you want to run on
@@ -205,6 +216,17 @@ space, and so it may not work if you only have the 4MB variant.
 
 [Pimoroni Pico Lipo 16MB]: https://shop.pimoroni.com/products/pimoroni-pico-lipo?variant=39335427080275
 [pimoroni-pico-lipo-16mb]: https://github.com/rp-rs/rp-hal/tree/main/boards/pimoroni-pico-lipo-16mb
+
+### [solderparty-rp2040-stamp] - Board Support for the [SolderParty RP2040 Stamp]
+
+You should include this crate if you are writing code that you want to run on
+a [SolderParty RP2040 Stamp] - a square RP2040 board with castellated edges.
+
+This crate includes the [rp2040-hal], but also configures each pin of the
+RP2040 chip according to how it is connected up on the Stamp.
+
+[SolderParty RP2040 Stamp]: https://www.solder.party/docs/rp2040-stamp/
+[solderparty-rp2040-stamp]: https://github.com/rp-rs/rp-hal/tree/main/boards/solderparty-rp2040-stamp
 
 ### [sparkfun-pro-micro-rp2040] - Board Support for the [Sparkfun Pro Micro RP2040]
 
