@@ -29,59 +29,68 @@ use hal::{
     adc::Adc,
     gpio::{
         bank0::{
-            Gpio0, Gpio1, Gpio12, Gpio13, Gpio14, Gpio15, Gpio16, Gpio17, Gpio18, Gpio19, Gpio2,
-            Gpio20, Gpio21, Gpio22, Gpio23, Gpio24, Gpio25, Gpio26, Gpio27, Gpio28, Gpio29, Gpio3,
-            Gpio4, Gpio5, Gpio6, Gpio7,
+            Gpio0, Gpio1, Gpio25, Gpio15, Gpio16, Gpio17, Gpio18, Gpio19, Gpio20,
+            Gpio21, Gpio5, Gpio7, Gpio4, Gpio6, Gpio26, Gpio27, Gpio28, Gpio29,
+            Gpio12, Gpio13,
         },
-        FunctionI2C, FunctionPwm, FunctionSpi, Pin, PinId, PullUpInput, PushPullOutput,
+        FunctionI2C, FunctionPwm, FunctionSpi,
+        Pin, PinId, PullUpInput, PushPullOutput,
     },
     pac::{RESETS, SPI0},
     sio::SioGpioBank0,
     spi::{Enabled, Spi},
 };
 
-hal::bsp_pins!(
-    Gpio0 { name: tx },
-    Gpio1 { name: rx },
-    Gpio2 { name: gpio0 },
-    Gpio3 { name: reset },
-    Gpio4 { 
-        name: miso,
-        aliases: { FunctionSpi: Miso }
-    },
-    Gpio5 { name: d10 },
-    Gpio6 { 
-        name: sck,
-        aliases: { FunctionSpi: Sclk }
-    },
-    Gpio7 { 
-        name: spitx, 
-        aliases: { FunctionSpi: Spitx }
-    },
-    Gpio8 { name: gpio8 },
-    Gpio9 { name: gpio9 },
-    Gpio10 { name: gpio10 },
-    Gpio11 { name: gpio11 },
-    Gpio12 { name: gpio12 },
-    Gpio13 { name: gpio13 },
-    Gpio14 { name: gpio14 },
-    Gpio15 { name: gpio15 },
-    Gpio16 { name: gpio16 },
-    Gpio17 { name: gpio17 },
-    Gpio18 { name: gpio18 },
-    Gpio19 { name: gpio19 },
-    Gpio20 { name: gpio20 },
-    Gpio21 { name: gpio21 },
-    Gpio22 { name: gpio22 },
-    Gpio23 { name: b_power_save },
-    Gpio24 { name: vbus_detect },
-    Gpio25 { name: led },
-    Gpio26 { name: gpio26 },
-    Gpio27 { name: gpio27 },
-    Gpio28 { name: gpio28 },
-    Gpio29 {
-        name: voltage_monitor
-    },
-);
+mod internal_pins {
+    hal::bsp_pins!(
+        Gpio0   { name: tx,
+                  aliases: { name: gpio0 }  },
+        Gpio1   { name: rx,
+                  aliases: { name: gpio1 }  },
+        Gpio2   { name: gpio0 },
+        Gpio3   { name: rstn_nina },
+        Gpio4   { name: cipo,
+                  aliases: { name: d12, FunctionSpi: Miso }     },
+        Gpio5   { name: d10,
+                  aliases: { name: gpio5 }  },
+        Gpio6   { name: sck,
+                  aliases: { name: d13, FunctionSpi: SpiClk }   },
+        Gpio7   { name: copi,
+                  aliases: { name: d11, FunctionSpi: Mosi }     },
+        Gpio12  { name: a4,
+                  aliases: { name: gpio12, FunctionI2C: Sda}    },
+        Gpio13  { name: a5,
+                  aliases: { name: gpio13, FunctionI2C: Scl}    },
+        Gpio15  { name: d3,
+                  aliases: { name: gpio15 } },
+        Gpio16  { name: d4,
+                  aliases: { name: gpio16 } },
+        Gpio17  { name: d5,
+                  aliases: { name: gpio17 } },
+        Gpio18  { name: d6,
+                  aliases: { name: gpio18 } },
+        Gpio19  { name: d7,
+                  aliases: { name: gpio19 } },
+        Gpio20  { name: d8,
+                  aliases: { name: gpio20 } },
+        Gpio21  { name: d9,
+                  aliases: { name: gpio21 } },
+        Gpio25  { name: d2,
+                  aliases: { name: gpio25 } },
+        Gpio26  { name: a0,
+                  aliases: { name: gpio26 } },
+        Gpio27  { name: a1,
+                  aliases: { name: gpio27 } },
+        Gpio28  { name: a2,
+                  aliases: { name: gpio28 } },
+        Gpio29  { name: a3,
+                  aliases: { name: gpio29 } },
+    );
+}
+
+pub struct Pins {
+    pub gpio0: Pin<Gpio0, <Gpio0 as PinId>::Reset>,
+
+}
 
 pub const XOSC_CRYSTAL_FREQ: u32 = 12_000_000;
