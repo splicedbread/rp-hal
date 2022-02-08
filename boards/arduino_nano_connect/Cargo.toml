@@ -47,6 +47,5 @@ boot2 = ["rp2040-boot2"]
 rt = ["cortex-m-rt","rp2040-hal/rt"]
 embassy-traits = ["futures", "embassy", "embassy_traits"]
 
-#[[example]]
-#name = "pico_i2c_controller_peripheral"
-#required-features = ["embassy-traits"]
+[[example]]
+name = "nano_blinky"
