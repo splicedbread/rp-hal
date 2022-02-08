@@ -15,6 +15,14 @@ pub use cortex_m_rt::entry;
 #[used]
 pub static BOOT2_FIRMWARE: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 
+use embedded_hal::{
+    adc::{Channel, OneShot},
+    digital::v2::{InputPin, OutputPin},
+    spi::MODE_0,
+};
+
+use embedded_time::rate::*;
+
 pub use hal::pac;
 
 // borrowed some pin defs from rp-pico from a dicussion on the bsp_pins! macro
