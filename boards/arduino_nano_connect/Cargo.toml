@@ -16,10 +16,10 @@ rp2040-hal = { path = "../../rp2040-hal", version = "0.4.0"}
 cortex-m-rt = { version = "0.7", optional = true }
 embedded-hal = { version = "0.2.4", features = ["unproven"] }
 embedded-time = "0.12.0"
-usb-device= "0.2.8"
-usbd-serial = "0.1.1"
-usbd-hid = "0.5.1"
-futures = { version = "0.3", default-features = false, optional = true }
+# peripheral dependencies
+wifi-nina = "0.1.2" # wifi module
+lsm6ds33 = "0.2.0"  # IMU unit. Possible wrong package but might work.
+# missing peripheral packs: mp34dt06jtr MEMs mic, Atecc608a crypto
 
 [dependencies.embassy]
 git = "https://github.com/embassy-rs/embassy"
@@ -39,13 +39,11 @@ panic-halt= "0.2.0"
 embedded-hal ="0.2.5"
 cortex-m-rtic = "0.6.0-alpha.5"
 nb = "1.0"
-# i2c-pio = { git = "https://github.com/ithinuel/i2c-pio-rs", rev = "afc2dad0e955da2b712d7f7cd78c7af88ddc6a45" }
 
 [features]
 default = ["boot2", "rt"]
 boot2 = ["rp2040-boot2"]
 rt = ["cortex-m-rt","rp2040-hal/rt"]
-embassy-traits = ["futures", "embassy", "embassy_traits"]
 
 [[example]]
 name = "nano_blinky"

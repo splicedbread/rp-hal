@@ -15,6 +15,9 @@ pub use cortex_m_rt::entry;
 #[used]
 pub static BOOT2_FIRMWARE: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 
+use wifi_nina::Wifi;
+use wifi_nina::Client;
+
 pub use hal::pac;
 
 // borrowed some pin defs from rp-pico from a dicussion on the bsp_pins! macro
@@ -751,3 +754,7 @@ hal::bsp_pins!(
 );
 
 pub const XOSC_CRYSTAL_FREQ: u32 = 12_000_000;
+
+// TODO: Implement wifi_nina wrapper
+// TODO: Implement ST LSM6DSOXTR Support - 6-axis IMU and more
+// TODO: Implement ST MP34DT06JTR Support - MEMs Microphone

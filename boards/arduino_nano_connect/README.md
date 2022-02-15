@@ -1,15 +1,16 @@
 # [arduino_nano_connect] - Board Support for the [Ardunio Nano RP2040 Connect]
 
 You should include this crate if you are writing code that you want to run on
-a [Raspberry Pi Pico] - a development pcb with shortwave communication, IMU, and BLE package.
+a [Arduino Nano RP2040 Connect] - a development pcb with IMU, BLE, WIFI, and Crypto Verification.
 
-This crate includes the [rp2040-hal], but also configures each pin of the
+This crate includes [rp2040-hal], but also configures each pin of the
 RP2040 chip according to how it is connected up on the nano connect.
 
-[Ardunio Nano RP2040 Connect]: https://store-usa.arduino.cc/collections/boards/products/arduino-nano-rp2040-connect
+[Arduino Nano RP2040 Connect]: https://store-usa.arduino.cc/collections/boards/products/arduino-nano-rp2040-connect
 [arduino_nano_connect]: https://github.com/rp-rs/rp-hal/tree/main/boards/arduino_nano_connect
 [rp2040-hal]: https://github.com/rp-rs/rp-hal/tree/main/rp2040-hal
 [Raspberry Silicon RP2040]: https://www.raspberrypi.org/products/rp2040/
+[nano_blinky]: https://github.com/rp-rs/rp-hal/tree/main/boards/arduino_nano_connect/examples/nano_blinky.rs
 
 ## Using
 
@@ -18,7 +19,7 @@ To use this crate, your `Cargo.toml` file should contain:
 ```toml
 arduino_nano_connect = { git = "https://github.com/rp-rs/rp-hal.git" }
 ```
-# TODO - down and out
+
 In your program, you will need to call `pico::Pins::new` to create
 a new `Pins` structure. This will set up all the GPIOs for any on-board
 devices. See the [examples](./examples) folder for more details.
@@ -30,7 +31,7 @@ devices. See the [examples](./examples) folder for more details.
 To compile an example, clone the _rp-hal_ repository and run:
 
 ```console
-rp-hal/boards/pico $ cargo build --release --example <name>
+rp-hal/boards/arduino_nano_connect $ cargo build --release --example <name>
 ```
 
 You will get an ELF file called
@@ -54,45 +55,7 @@ $ cargo install elf2uf2-rs
 ```
 then try repeating the `cargo run` command above.
 
-### [pico_blinky](./examples/pico_blinky.rs)
-
-Flashes the Pico's on-board LED on and off.
-
-### [pico_gpio_in_out](./examples/pico_gpio_in_out.rs)
-
-Reads the 'Boot Select' pin and drives the on-board LED to match it (i.e. on when pressed, off when not pressed).
-
-### [pico_rtic](./examples/pico_rtic.rs)
-
-Demonstrates the use of the [Real-Time Interrupt-driven Concurrency Framework] on the Raspberry Pi Pico.
-
-[Real-Time Interrupt-driven Concurrency Framework]: https://rtic.rs
-
-### [pico_countdown_blinky](./examples/pico_countdown_blinky.rs)
-
-Another LED blinking example, but using a Timer in count-down mode.
-
-### [pico_pwm_blink](./examples/pico_pwm_blink.rs)
-
-Puts out an analog 'triangle wave' on GPIO 25, using the PWM hardware.
-
-### [pico_usb_serial](./examples/pico_usb_serial.rs)
-
-Creates a USB Serial device on a Pico board.
-
-The USB Serial device will print `HelloWorld` on start-up, and then echo any
-incoming characters - except that any lower-case ASCII characters are
-converted to the upper-case equivalent.
-
-### [pico_usb_serial_interrupt](./examples/pico_usb_serial_interrupt.rs)
-
-Creates a USB Serial device on a Pico board, but demonstrating handling
-interrupts when USB data arrives.
-
-### [pico_usb_twitchy_mouse](./examples/pico_usb_twitchy_mouse.rs)
-
-Demonstrates emulating a USB Human Input Device (HID) Mouse. The mouse
-cursor will jiggle up and down.
+### [nano_blinky](./examples/nano_blinky.rs)
 
 ## Contributing
 
