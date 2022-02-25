@@ -4,6 +4,8 @@ pub extern crate rp2040_hal as hal;
 
 #[cfg(feature = "rt")]
 extern crate cortex_m_rt;
+
+use core::time::Duration;
 #[cfg(feature = "rt")]
 pub use cortex_m_rt::entry;
 
@@ -17,8 +19,21 @@ pub static BOOT2_FIRMWARE: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 
 use wifi_nina::Wifi;
 use wifi_nina::Client;
+use wifi_nina::transport::SpiTransport;
 
 pub use hal::pac;
+
+use embedded_hal::{
+    digital::v2::{InputPin, OutputPin},
+};
+
+use hal::{
+    gpio::{
+        FunctionI2C, FunctionPwm, FunctionSpi, Pin, PinId, PullUpInput, PushPullOutput,
+    },
+    pac::{RESETS, SPI0, SPI1},
+    spi::{Enabled, Spi},
+};
 
 // borrowed some pin defs from rp-pico from a dicussion on the bsp_pins! macro
 // stripped out functions from connected lines that are no available through
@@ -754,6 +769,23 @@ hal::bsp_pins!(
 );
 
 pub const XOSC_CRYSTAL_FREQ: u32 = 12_000_000;
+
+pub type NanoWifi = Wifi<
+    SpiTransport<Spi<Enabled, SPI1, 8>, BusyDummyPin, Pin<Gpio3, PushPullOutput>, Pin<Gpio9, PushPullOutput>, Duration>
+>;
+
+pub struct BusyDummyPin;
+
+impl InputPin for BusyDummyPin {
+    type Error = ();
+    fn is_high(&self) -> Result<bool, Self::Error> {
+        self.is_high()
+    }
+
+    fn is_low(&self) -> Result<bool, Self::Error> {
+        self.is_low()
+    }
+}
 
 // TODO: Implement wifi_nina wrapper
 // TODO: Implement ST LSM6DSOXTR Support - 6-axis IMU and more
