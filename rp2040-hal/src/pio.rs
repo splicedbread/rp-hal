@@ -244,13 +244,11 @@ impl<P: PIOExt> PIO<P> {
 /// let mut peripherals = pac::Peripherals::take().unwrap();
 /// let (mut pio, sm0, _, _, _) = peripherals.PIO0.split(&mut peripherals.RESETS);
 /// // Install a program in instruction memory.
-/// let program = pio_proc::pio!(
-///     32,
-///     ".wrap_target
-///     set pins, 1 [31]
-///     set pins, 0 [31]
-/// .wrap
-///     "
+/// let program = pio_proc::pio_asm!(
+///     ".wrap_target",
+///     "set pins, 1 [31]",
+///     "set pins, 0 [31]",
+///     ".wrap"
 /// ).program;
 /// let installed = pio.install(&program).unwrap();
 /// // Configure a state machine to use the program.
@@ -557,6 +555,22 @@ impl<SM: ValidStateMachine> StateMachine<SM, Stopped> {
             program: self.program,
             _phantom: core::marker::PhantomData,
         }
+    }
+
+    /// Change the clock divider of a stopped state machine.
+    pub fn set_clock_divisor(&mut self, divisor: f32) {
+        // sm frequency = clock freq / (CLKDIV_INT + CLKDIV_FRAC / 256)
+        let int = divisor as u16;
+        let frac = ((divisor - int as f32) * 256.0) as u8;
+
+        self.sm.sm().sm_clkdiv.write(|w| {
+            unsafe {
+                w.int().bits(int);
+                w.frac().bits(frac);
+            }
+
+            w
+        });
     }
 
     /// Sets the pin state for the specified pins.

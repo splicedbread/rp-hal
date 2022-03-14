@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
     "rp2040-hal",
+    "rp2040-hal-macros",
     "boards/adafruit-feather-rp2040",
     "boards/adafruit-itsy-bitsy-rp2040",
     "boards/adafruit-kb2040",
@@ -10,6 +11,7 @@ members = [
     "boards/adafruit-trinkey-qt2040",
     "boards/pimoroni-pico-explorer",
     "boards/pimoroni-pico-lipo-16mb",
+    "boards/pimoroni-tiny2040",
     "boards/rp-pico",
     "boards/solderparty-rp2040-stamp",
     "boards/sparkfun-pro-micro-rp2040",

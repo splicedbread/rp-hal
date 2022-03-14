@@ -35,8 +35,6 @@
 //! See [examples/watchdog.rs](https://github.com/rp-rs/rp-hal/tree/main/rp2040-hal/examples/watchdog.rs) for a more complete example
 
 use crate::pac::WATCHDOG;
-#[cfg(feature = "eh1_0_alpha")]
-use eh1_0_alpha::watchdog::blocking as eh1;
 use embedded_hal::watchdog;
 use embedded_time::{duration, fixed_point::FixedPoint};
 
@@ -92,20 +90,26 @@ impl Watchdog {
     fn enable(&self, bit: bool) {
         self.watchdog.ctrl.write(|w| w.enable().bit(bit))
     }
+
+    /// Configure which hardware will be reset by the watchdog
+    /// the default is everything except ROSC, XOSC
+    ///
+    /// Safety: ensure no other device is writing to psm.wdsel
+    /// This is easy at the moment, since nothing else uses PSM
+    unsafe fn configure_wdog_reset_triggers(&self) {
+        let psm = &*pac::PSM::ptr();
+        psm.wdsel.write_with_zero(|w| {
+            w.bits(0x0001ffff);
+            w.xosc().clear_bit();
+            w.rosc().clear_bit();
+            w
+        });
+    }
 }
 
 impl watchdog::Watchdog for Watchdog {
     fn feed(&mut self) {
         self.load_counter(self.delay_ms)
-    }
-}
-#[cfg(feature = "eh1_0_alpha")]
-impl eh1::Watchdog for Watchdog {
-    type Error = core::convert::Infallible;
-
-    fn feed(&mut self) -> Result<(), Self::Error> {
-        self.load_counter(self.delay_ms);
-        Ok(())
     }
 }
 
@@ -124,45 +128,16 @@ impl watchdog::WatchdogEnable for Watchdog {
         }
 
         self.enable(false);
-        self.load_counter(self.delay_ms);
-        self.enable(true);
-    }
-}
-#[cfg(feature = "eh1_0_alpha")]
-impl eh1::Enable for Watchdog {
-    type Error = core::convert::Infallible;
-    type Target = Self;
-    type Time = duration::Microseconds;
-
-    fn start<T: Into<Self::Time>>(mut self, period: T) -> Result<Self::Target, Self::Error> {
-        const MAX_PERIOD: u32 = 0xFFFFFF;
-
-        // Due to a logic error, the watchdog decrements by 2 and
-        // the load value must be compensated; see RP2040-E1
-        self.delay_ms = period.into().integer() * 2;
-
-        if self.delay_ms > MAX_PERIOD {
-            panic!("Period cannot exceed maximum load value of {}", MAX_PERIOD);
+        unsafe {
+            self.configure_wdog_reset_triggers();
         }
-
-        self.enable(false);
         self.load_counter(self.delay_ms);
         self.enable(true);
-        Ok(self)
     }
 }
 
 impl watchdog::WatchdogDisable for Watchdog {
     fn disable(&mut self) {
         self.enable(false)
-    }
-}
-#[cfg(feature = "eh1_0_alpha")]
-impl eh1::Disable for Watchdog {
-    type Error = core::convert::Infallible;
-    type Target = Self;
-    fn disable(self) -> Result<Self::Target, Self::Error> {
-        self.enable(false);
-        Ok(self)
     }
 }
