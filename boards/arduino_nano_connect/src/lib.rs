@@ -17,14 +17,15 @@ pub use cortex_m_rt::entry;
 #[used]
 pub static BOOT2_FIRMWARE: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 
-use wifi_nina::Wifi;
-use wifi_nina::Client;
+pub use wifi_nina::Wifi;
+pub use wifi_nina::Client;
 use wifi_nina::transport::SpiTransport;
 
 pub use hal::pac;
 
 use embedded_hal::{
     digital::v2::{InputPin, OutputPin},
+    spi::MODE_0,
 };
 
 use hal::{
@@ -33,6 +34,7 @@ use hal::{
     },
     pac::{RESETS, SPI0, SPI1},
     spi::{Enabled, Spi},
+    sio::SioGpioBank0,
 };
 
 // borrowed some pin defs from rp-pico from a dicussion on the bsp_pins! macro
@@ -774,6 +776,19 @@ pub type NanoWifi = Wifi<
     SpiTransport<Spi<Enabled, SPI1, 8>, BusyDummyPin, Pin<Gpio3, PushPullOutput>, Pin<Gpio9, PushPullOutput>, Duration>
 >;
 
+// pub type NanoBTE
+
+// pub type NanoIMU
+
+// pub type NanoAuth
+
+pub struct NanoConnect {
+    pub wifi: NanoWifi,
+    // pub bte: NanoBTE,
+    // pub imu: NanoIMU,
+    // pub crypto: NanoAuth,
+}
+
 pub struct BusyDummyPin;
 
 impl InputPin for BusyDummyPin {
@@ -787,6 +802,18 @@ impl InputPin for BusyDummyPin {
     }
 }
 
-// TODO: Implement wifi_nina wrapper
-// TODO: Implement ST LSM6DSOXTR Support - 6-axis IMU and more
-// TODO: Implement ST MP34DT06JTR Support - MEMs Microphone
+impl NanoConnect {
+    pub fn new(
+        io: pac::IO_BANK0,
+        pads: pac::PADS_BANK0,
+        sio: SioGpioBank0,
+        spi1: SPI1,
+        resets: &mut RESETS,
+    ) -> (Self) {
+        let pins = arduino_nano_connect::Pins::new(
+            io, pads, sio, resets
+        );
+
+        pins
+    }
+}
